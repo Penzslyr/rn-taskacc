@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,6 +22,7 @@ import ProfileIcon from '../../assets/images/profileicon.svg';
 import TaskIcon from '../../assets/images/task.svg';
 import PerfomIcon from '../../assets/images/perform.svg';
 import PlusIcon from '../../assets/images/Combined Shape.svg';
+import PlusIconGrad from '../../assets/images/iconAddsReal.png'
 import Performance from '../Performance';
 import Task from '../Task';
 import { useNavigation } from '@react-navigation/native';
@@ -40,16 +42,15 @@ const FloatingButton = ({ children, onPress }) => {
         alignItems: 'center',
       }}
     >
-      <View
-        style={{
-          width: 80,
+      <Image style={{
+          width: 110,
           position: 'absolute',
-          height: 80,
+          height: 90,
           borderRadius: 40,
-          bottom: -5,
-          backgroundColor: '#04325F',
-        }}
-      ></View>
+          bottom: -20,
+       
+        }} source={PlusIconGrad} />
+      
       <View style={{ width: 70, height: 70 }}>{children}</View>
     </TouchableOpacity>
   );
@@ -97,7 +98,7 @@ const Main = ({ navigation, routes }) => {
                 </Text>
               </View>
             ),
-            Add: <PlusIcon width={size} height={size} fill={'white'} />,
+           
             Task: (
               <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <TaskIcon width={size} height={size} fill={color} />

@@ -3,27 +3,54 @@ import React, { useState } from 'react';
 import Text from '../../components/text';
 import { Fonts, HEIGHT, WIDHT } from '../../assets/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { collection, addDoc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../../../config';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { store } from '../../store/storage';
 import { addTask } from '../../store/action/actionAddTask';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Picker } from '@react-native-picker/picker';
 const { dispatch } = store;
 
-const AddScreen = ({ navigation }) => {
-  const [Title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date());
+const UpdateScreen = ({ navigation }, id) => {
+  const route = useRoute();
+  //   console.log('Ini data update: ', route.params.item.id);
+  const [Title, setTitle] = useState(route.params.item.title);
+  const [date, setDate] = useState(new Date(route.params.item.date));
   const [dateClicked, setDateClicked] = useState(false);
   const [dateReal, setDateReal] = useState(new Date());
-  const [startTime, setStartTime] = useState(new Date());
-  const [EndTime, setEndTime] = useState(new Date());
-  const [Status, setStatus] = useState('');
-  const [Description, setDescription] = useState('');
+  const [startTime, setStartTime] = useState(
+    new Date(route.params.item.startTime)
+  );
+  const [EndTime, setEndTime] = useState(new Date(route.params.item.endTime));
+  const [Status, setStatus] = useState(route.params.item.status);
+  const [Description, setDescription] = useState(route.params.item.activities);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+
+  const deleteTask = async () => {
+    const taskDoc = doc(db, 'tasks', route.params.item.id);
+    await deleteDoc(taskDoc);
+  };
+
+  const updateTask = async () => {
+    const taskDoc = doc(db, 'tasks', route.params.item.id);
+    updateDoc(taskDoc, {
+      title: Title,
+      date: date.toISOString(),
+      startTime: startTime.toISOString(),
+      endTime: EndTime.toISOString(),
+      status: Status,
+      activities: Description,
+    });
+  };
 
   // const dataStatus = [
   //   { label: 'Present', value: 'Present' },
@@ -84,16 +111,6 @@ const AddScreen = ({ navigation }) => {
     description: Description,
   };
 
-  function addDataFirebase() {
-    addDoc(collection(db, 'tasks'), {
-      title: Title,
-      date: date.toISOString(),
-      startTime: startTime.toISOString(),
-      endTime: EndTime.toISOString(),
-      status: Status,
-      activities: Description,
-    });
-  }
   // const navigate = useNavigation()
   const options = {
     year: 'numeric',
@@ -134,8 +151,6 @@ const AddScreen = ({ navigation }) => {
           </View>
         </View>
 
-      
-
         <View style={{ marginTop: 30 }}>
           <Text fontSize={16} regular bold>
             Date
@@ -160,9 +175,7 @@ const AddScreen = ({ navigation }) => {
                 color: 'black',
               }}
               editable={false}
-              value={
-                dateClicked ? date.toLocaleDateString('en-US', options) : ''
-              }
+              value={date.toLocaleDateString('en-US', options)}
               autoCorrect={true}
               placeholder='Date'
               placeholderTextColor='#D3D3D3'
@@ -322,31 +335,57 @@ const AddScreen = ({ navigation }) => {
             />
           </View>
         </View>
-
-        <TouchableOpacity
-          style={{
-            marginTop: 20,
-            backgroundColor: '#7BED9F',
-            borderRadius: 8,
-            paddingVertical: 12,
-            alignItems: 'center',
-          }}
-          onPress={() => {
-            // dispatch(addTask(sendTask));
-            addDataFirebase();
-            navigation.navigate('Main', {
-              screen: 'Task',
-            });
-            // navigate.navigate('Task')
-          }}
-        >
-          <Text fontSize={16} bold color='#261A31'>
-            Submit
-          </Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", marginBottom: 30 }}>
+          <View style={{ flex:1 }}>
+            <TouchableOpacity
+              style={{
+                marginTop: 20,
+                backgroundColor: '#7BED9F',
+                borderRadius: 8,
+                paddingVertical: 12,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                // dispatch(addTask(sendTask));
+                updateTask();
+                navigation.navigate('Main', {
+                  screen: 'Task',
+                });
+                // navigate.navigate('Task')
+              }}
+            >
+              <Text fontSize={16} bold color='#261A31'>
+                Submit
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex:1, marginLeft: 20 }}>
+            <TouchableOpacity
+              style={{
+                marginTop: 20,
+                backgroundColor: '#EA8685',
+                borderRadius: 8,
+                paddingVertical: 12,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                // dispatch(addTask(sendTask));
+                deleteTask();
+                navigation.navigate('Main', {
+                  screen: 'Task',
+                });
+                // navigate.navigate('Task')
+              }}
+            >
+              <Text fontSize={16} bold color='#261A31'>
+                Delete
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
-export default AddScreen;
+export default UpdateScreen;

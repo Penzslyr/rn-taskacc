@@ -8,6 +8,7 @@ import { Image } from 'react-native';
 import Text from '../../components/text';
 import { useNavigation } from '@react-navigation/native';
 import Task from '../../screens/Task';
+import UpdateScreen from '../../screens/Update';
 
 const Stack = createStackNavigator();
 
@@ -80,6 +81,35 @@ const Routes = () => {
       />
       <Stack.Screen name='Main' component={MAIN} />
       <Stack.Screen name='Task' component={Task} />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          header: () => (
+            <View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  height: 50,
+                  marginTop: 30,
+                  justifyContent: 'center',
+                  padding: 10,
+                }}
+              >
+                <Text bold>Timesheet Form</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{ position: 'absolute', top: 47, left: 10 }}
+              >
+                <Image source={require('../../assets/images/leftimg.png')} />
+              </TouchableOpacity>
+            </View>
+          ),
+        }}
+        name='Update'
+        component={UpdateScreen}
+      />
     </Stack.Navigator>
   );
 };

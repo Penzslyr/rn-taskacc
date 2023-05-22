@@ -57,6 +57,8 @@ const Register = () => {
             setIsLoading(false);
           }, 1000);
         });
+    }else{
+      alert("Please input the same password")
     }
   };
 
@@ -249,7 +251,7 @@ const Register = () => {
                   onChangeText={(val) => {
                     setPasswordConfirm(val);
                   }}
-                  secureTextEntry={IsVisible}
+                  secureTextEntry={IsVisibleConfirm}
                   placeholder='Confirm Password'
                   placeholderTextColor='#D3D3D3'
                   style={{
@@ -265,10 +267,10 @@ const Register = () => {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() => setIsVisible(!IsVisible)}
+                  onPress={() => setIsVisibleConfirm(!IsVisibleConfirm)}
                   style={{ position: 'absolute', right: 12, top: 15 }}
                 >
-                  {IsVisible ? <EyeIcon size={20} /> : <EyeSlash />}
+                  {IsVisibleConfirm ? <EyeIcon size={20} /> : <EyeSlash />}
                 </TouchableOpacity>
               </View>
             </View>

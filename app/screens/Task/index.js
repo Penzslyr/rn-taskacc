@@ -1,4 +1,4 @@
-import { View, Image } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
@@ -18,20 +18,31 @@ const Task = ({ navigation }) => {
   const [dataTask, setDataTask] = useState([]);
   const data = useSelector((state) => state.dataTask.dataTask);
   const usersCollectionRef = collection(db, 'tasks');
-  
+
   const checkStatus = (status) => {
-    if(status==="Present"){
-      return '#70A1FF'
+    if (status === 'Present') {
+      return '#70A1FF';
     }
-    if(status==="Absent"){
-      return '#EF9F9F'
+    if (status === 'Absent') {
+      return '#EF9F9F';
     }
-    if(status==="Sick"){
-      return '#ECCC68'
+    if (status === 'Sick') {
+      return '#ECCC68';
     }
-    if(status==="Leave"){
-      return "#FDE180"
+    if (status === 'Leave') {
+      return '#FDE180';
     }
+  };
+
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+
+  function parseISOString(s) {
+    var b = s.split(/\D+/);
+    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
   }
 
   useEffect(() => {
@@ -54,7 +65,12 @@ const Task = ({ navigation }) => {
       <ScrollView style={{ marginHorizontal: 16 }}>
         {dataTask &&
           dataTask.map((item) => (
-            <View
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Update', {
+                  item,
+                })
+              }
               key={item.id}
               style={{
                 width: 343,
@@ -94,7 +110,10 @@ const Task = ({ navigation }) => {
                   style={{ marginLeft: 6, width: 254 }}
                   fontSize={12}
                 >
-                  {item.date}
+                  {parseISOString(item.date).toLocaleDateString(
+                    'en-US',
+                    options
+                  )}
                 </Text>
               </View>
               <Text
@@ -135,10 +154,20 @@ const Task = ({ navigation }) => {
                   }}
                   color='#ffff'
                 >
-                  {item.startTime}-{item.endTime}
+                  {new Date(item.startTime).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                  })}
+                  -
+                  {new Date(item.endTime).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                  })}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
       </ScrollView>
     </View>
