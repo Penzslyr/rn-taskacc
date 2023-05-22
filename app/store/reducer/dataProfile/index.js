@@ -9,6 +9,11 @@ function data(state = initialState, action) {
         ...state,
         dataProfile: action.payload,
       };
+    case "@APP/SAVE/LOGOUT": 
+    return {
+      ...state,
+      dataProfile: []
+    }
   }
   return state;
 }

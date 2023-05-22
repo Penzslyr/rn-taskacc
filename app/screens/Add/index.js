@@ -20,7 +20,7 @@ const AddScreen = ({ navigation }) => {
   const [dateReal, setDateReal] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [EndTime, setEndTime] = useState(new Date());
-  const [Status, setStatus] = useState('');
+  const [Status, setStatus] = useState('Present');
   const [Description, setDescription] = useState('');
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);

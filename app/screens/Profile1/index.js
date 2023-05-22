@@ -10,12 +10,27 @@ import React from 'react';
 import { WIDHT, HEIGHT, verticalScale, SHADOW } from '../../assets/styles';
 import Text from '../../components/text';
 import { useSelector } from 'react-redux';
+import { store } from '../../store/storage';
+import { logOut } from '../../store/action/actionLogOut';
+const { dispatch } = store;
 const Profile1 = ({ navigation, route }) => {
   const data = useSelector((state) => state.dataProfile.dataProfile[0]);
-  console.log(
-    'INI DATA pfp',
-    JSON.stringify(data, null, 2)
-  );
+  console.log('INI DATA pfp', JSON.stringify(data, null, 2));
+
+  async function myFunction() {
+    dispatch(logOut());
+  }
+
+  const logoutUser = () => {
+    myFunction().then(
+      function (value) {
+        navigation.navigate('Login');
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
+  };
   return (
     <ScrollView>
       <ImageBackground
@@ -265,7 +280,8 @@ const Profile1 = ({ navigation, route }) => {
                 marginVertical: 13,
               }}
             />
-            <View
+            <TouchableOpacity
+              onPress={() => logoutUser()}
               style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
             >
               <Image
@@ -279,7 +295,7 @@ const Profile1 = ({ navigation, route }) => {
                 source={require('../../assets/images/Vector.png')}
                 style={{ position: 'absolute', right: 0, alignSelf: 'center' }}
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <Text style={{ marginVertical: 20, textAlign: 'center' }} bold>
             v0.0.1
